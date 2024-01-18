@@ -150,6 +150,7 @@ cython_debug/
 # data
 data/
 data-compressed/
+data-all/
 
 # PyCharm
 #  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can
