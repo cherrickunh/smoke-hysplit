@@ -16,25 +16,27 @@ outspace = os.path.join(os.getcwd(), "out")
 env.workspace = outspace
 env.overwriteOutput = True
 
+skipLakes = ['Agrio']
+
 # if not os.path.exists(os.path.join(outspace, "Hysplit_sites.gdb")):
 #     arcpy.management.CreateFileGDB(outspace, "Hysplit_sites")
 # gdb_out = os.path.join(outspace, "Hysplit_sites.gdb")
 
 for d in os.listdir(inspace):
-    if os.path.isdir(os.path.join(inspace, d)):
+    if os.path.isdir(os.path.join(inspace, d)) and d not in skipLakes:
         site = d
         site_dir = os.path.join(inspace, d)
 
         print('site: %s --> %s' % (site, strftime('%X')))
 
-        all = pd.DataFrame(columns=['year','month', 'day','hour','y','x','z','P','id'])
-        all_wet = pd.DataFrame(columns=['year','month', 'day','hour','y','x','z','P','id'])
-        all_dry = pd.DataFrame(columns=['year','month', 'day','hour','y','x','z','P','id'])
-        all_drought = pd.DataFrame(columns=['year','month', 'day','hour','y','x','z','P','id'])
-        all_non_drought = pd.DataFrame(columns=['year','month', 'day','hour','y','x','z','P','id'])
+        all = pd.DataFrame(columns=['year','month', 'day','hour','x','y','z','P','id'])
+        all_wet = pd.DataFrame(columns=['year','month', 'day','hour','x','y','z','P','id'])
+        all_dry = pd.DataFrame(columns=['year','month', 'day','hour','x','y','z','P','id'])
+        all_drought = pd.DataFrame(columns=['year','month', 'day','hour','x','y','z','P','id'])
+        all_non_drought = pd.DataFrame(columns=['year','month', 'day','hour','x','y','z','P','id'])
 
         for f in os.listdir(site_dir):
-            colnames = ['id1', 'id2', 'year','month', 'day','hour','min','sec','diff','y','x','z','P']
+            colnames = ['id1', 'id2', 'year','month', 'day','hour','min','sec','diff','x','y','z','P']
             
             f_csv = os.path.join(site_dir, f+'.csv')
             f_id = re.sub('\D', '', f)
@@ -69,11 +71,11 @@ for d in os.listdir(inspace):
         all_non_drought['geom'] = all_non_drought.apply(lambda rec: Point((float(rec.x), float(rec.y))), axis=1)
 
         print("Writing geopandas df... (%s)" % strftime('%X'))
-        shp_all = gpd.GeoDataFrame(all, geometry='geom')
-        shp_wet = gpd.GeoDataFrame(all_wet, geometry='geom')
-        shp_dry = gpd.GeoDataFrame(all_dry, geometry='geom')
-        shp_drought = gpd.GeoDataFrame(all_drought, geometry='geom')
-        shp_non_drought = gpd.GeoDataFrame(all_non_drought, geometry='geom')
+        shp_all = gpd.GeoDataFrame(all, geometry='geom', crs='EPSG:4326')
+        shp_wet = gpd.GeoDataFrame(all_wet, geometry='geom', crs='EPSG:4326')
+        shp_dry = gpd.GeoDataFrame(all_dry, geometry='geom', crs='EPSG:4326')
+        shp_drought = gpd.GeoDataFrame(all_drought, geometry='geom', crs='EPSG:4326')
+        shp_non_drought = gpd.GeoDataFrame(all_non_drought, geometry='geom', crs='EPSG:4326')
 
         print("Writing to local files...  (%s)" % strftime('%X'))
         shp_all.to_file(os.path.join(outspace, site+"_all.shp"), driver='ESRI Shapefile', index=False)
@@ -87,3 +89,4 @@ for d in os.listdir(inspace):
                                                    'Hysplit_sites.gdb')
 
         print("Done!\n")
+            
