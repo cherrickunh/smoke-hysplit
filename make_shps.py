@@ -1,4 +1,6 @@
-import os, re
+import os
+import re
+import glob
 import pandas as pd
 from shapely.geometry import Point
 import geopandas as gpd
@@ -120,5 +122,9 @@ for d in os.listdir(inspace):
         print("Writing to gdb...  (%s)" % strftime('%X'))
         arcpy.conversion.FeatureClassToGeodatabase([site+"_all.shp", site+"_wet.shp", site+"_dry.shp", site+"_drought.shp", site+"_nondrought.shp"], 
                                                 'Hysplit_sites.gdb')
+        
+        csv_files = glob.glob(site_dir, "*.csv")
+        for c in csv_files:
+            os.remove(c)
 
         print("Done!\n")
