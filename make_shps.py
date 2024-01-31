@@ -1,3 +1,4 @@
+# -------------------- import modules
 import os
 import re
 import glob
@@ -12,14 +13,16 @@ from arcpy import env
 import warnings
 warnings.filterwarnings('ignore')
 
-inspace = os.path.join(os.getcwd(), "data")
-outspace = os.path.join(os.getcwd(), "out")
+# -------------------- user input
+inspace = os.path.join(os.getcwd(), "data") # <-- directory that holds subdirectories of sites
+outspace = os.path.join(os.getcwd(), "out") # <-- where intermediate shapefiles and geodatabase live
 
+skipSites = [] # <-- string list of subdirectory names that should be skipped
+overwrite = False # <-- should existing files be overwritten? yes= True, no= False
+
+# -------------------- rest of the script
 env.workspace = outspace
 env.overwriteOutput = True
-
-skipLakes = []
-overwrite = False
 
 def writeOverwrite(input_path):
     if os.path.exists(input_path):
@@ -31,7 +34,7 @@ if not os.path.exists(os.path.join(outspace, "Hysplit_sites.gdb")):
     arcpy.management.CreateFileGDB(outspace, "Hysplit_sites")
 
 for d in os.listdir(inspace):
-    if os.path.isdir(os.path.join(inspace, d)) and d not in skipLakes:
+    if os.path.isdir(os.path.join(inspace, d)) and d not in skipSites:
 
         site = d
         site_dir = os.path.join(inspace, d)
