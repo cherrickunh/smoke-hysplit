@@ -1,3 +1,4 @@
+#----------------------- import libraries
 import os
 import re
 import glob
@@ -12,14 +13,16 @@ from arcpy import env
 import warnings
 warnings.filterwarnings('ignore')
 
+#----------------------- user input
 inspace = os.path.join(os.getcwd(), "data")
 outspace = os.path.join(os.getcwd(), "out")
 
+skipLakes = [] # <- list of strings of any lake directories that should be skipped
+overwrite = False # <- should existing files be overwritten? yes=True, no=False
+
+#----------------------- start script
 env.workspace = outspace
 env.overwriteOutput = True
-
-skipLakes = []
-overwrite = False
 
 def writeOverwrite(input_path):
     if os.path.exists(input_path):
