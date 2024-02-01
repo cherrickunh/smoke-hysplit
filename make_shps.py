@@ -53,9 +53,9 @@ for d in os.listdir(inspace):
             
             f_csv = os.path.join(site_dir, f+'.csv')
             f_id = re.sub('\D', '', f)
-            f_yr = int(f_id[:4])
-            f_mn = int(f_id[4:6])
-            f_dy = int(f_id[6:])
+            f_yr = int(f_id[-8:-4])
+            f_mn = int(f_id[-4:-2])
+            f_dy = int(f_id[-2:])
 
             with open(os.path.join(site_dir, f), 'r') as rl, open(f_csv, 'w') as wl:
                 lines = rl.readlines()
