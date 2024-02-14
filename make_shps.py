@@ -65,6 +65,8 @@ for d in os.listdir(inspace):
             df = df.drop(columns=['id1','id2','diff','min','sec'])
             df['id'] = f_id
 
+            os.remove(f_csv)
+
             all = pd.concat([all, df])
             if f_mn in [11,12,1,2,3,4,5,6]:
                 all_wet = pd.concat([all_wet, df])
@@ -127,8 +129,5 @@ for d in os.listdir(inspace):
         arcpy.conversion.FeatureClassToGeodatabase([site+"_all.shp", site+"_wet.shp", site+"_dry.shp", site+"_drought.shp", site+"_nondrought.shp"], 
                                                 'Hysplit_sites.gdb')
         
-        csv_files = glob.glob(site_dir, "*.csv")
-        for c in csv_files:
-            os.remove(c)
 
         print("Done!\n")
